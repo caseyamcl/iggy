@@ -1,5 +1,7 @@
-Put your assets in here.
+Iggy Assets Directory
+=====================
 
-Iggy is pre-configured to look in certain places for your LESS and SCSS files.
+Place all CSS, Images, JS, LESS, SCSS, media, and other static
+content in here.
 
-Document those here..
+See the main README.md for details.

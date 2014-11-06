@@ -1,16 +1,31 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: casey
- * Date: 11/5/14
- * Time: 4:31 PM
+ * Iggy Rapid Prototyping App
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @link https://github.com/caseyamcl/iggy
+ * @version 1.0
+ * @package caseyamcl/iggy
+ * @author Casey McLaughlin <caseyamcl@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * ------------------------------------------------------------------
  */
 
 namespace Iggy;
 
 use Symfony\Component\HttpFoundation\Response;
 
-
+/**
+ * Iggy Error Handler
+ *
+ * Attempt to load custom error page, but falls back to valid HTML default
+ *
+ * @package Iggy
+ */
 class ErrorHandler
 {
     /**
@@ -31,9 +46,9 @@ class ErrorHandler
     {
         // Try the application error code, then the HTTP error code, then just 'error'
         $templatesToTry = array(
-            'error/' . $e->getcode() . '.html.twig',
-            'error/' . $e->getHttpCode() . '.html.twig',
-            'error/default.html.twig'
+            'errors/' . $e->getcode() . '.html.twig',
+            'errors/' . $e->getHttpCode() . '.html.twig',
+            'errors/default.html.twig'
         );
 
         foreach ($templatesToTry as $file) {

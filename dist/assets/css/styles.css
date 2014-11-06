@@ -1,0 +1,9 @@
+/**
+ * Example CSS
+ */
+body, p {
+    background-color: #F5F5F5;
+    color: #333;
+    font-family: Helvetica , Arial, sans-serif;
+    font-size: 16px;
+}

@@ -1,13 +1,20 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: casey
- * Date: 11/5/14
- * Time: 9:41 PM
+ * Iggy Rapid Prototyping App
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @link https://github.com/caseyamcl/iggy
+ * @version 1.0
+ * @package caseyamcl/iggy
+ * @author Casey McLaughlin <caseyamcl@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * ------------------------------------------------------------------
  */
-
 namespace IggyTest\AssetProcessor;
-
 
 use Iggy\AssetProcessor\AssetProcessorInterface;
 use Iggy\AssetProcessor\ScssAssetProcessor;

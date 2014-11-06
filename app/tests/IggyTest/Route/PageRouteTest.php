@@ -1,17 +1,28 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: casey
- * Date: 11/5/14
- * Time: 9:52 PM
+ * Iggy Rapid Prototyping App
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @link https://github.com/caseyamcl/iggy
+ * @version 1.0
+ * @package caseyamcl/iggy
+ * @author Casey McLaughlin <caseyamcl@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * ------------------------------------------------------------------
  */
-
 namespace IggyTest\Route;
-
 
 use Iggy\Route\PageRoute;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+/**
+ * Class PageRouteTest
+ * @package IggyTest\Route
+ */
 class PageRouteTest extends \PHPUnit_Framework_TestCase
 {
     public function testInstantiateSucceeds()

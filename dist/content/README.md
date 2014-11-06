@@ -1,3 +1,6 @@
-Put your HTML pages and templates in here...
+Iggy Content Directory
+======================
 
-Document this.
+This is where you put your pages, errors, and other Twig templates.
+
+See the main README.md for details.

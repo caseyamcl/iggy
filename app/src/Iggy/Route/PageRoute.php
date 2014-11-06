@@ -1,17 +1,30 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: casey
- * Date: 11/5/14
- * Time: 4:31 PM
- */
 
+/**
+ * Iggy Rapid Prototyping App
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @link https://github.com/caseyamcl/iggy
+ * @version 1.0
+ * @package caseyamcl/iggy
+ * @author Casey McLaughlin <caseyamcl@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * ------------------------------------------------------------------
+ */
 namespace Iggy\Route;
 
 use Iggy\HttpException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Page Route Handler
+ *
+ * @package Iggy\Route
+ */
 class PageRoute
 {
     /**
