@@ -8,7 +8,6 @@ use Iggy\AssetProcessor\LessAssetProcessor;
 use Iggy\AssetProcessor\ScssAssetProcessor;
 use Iggy\Route\AssetRoute;
 use Iggy\Route\PageRoute;
-use Leafo\ScssPhp\Compiler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig_Loader_Filesystem;
@@ -107,9 +106,9 @@ class App
     protected function loadAssetProcessors()
     {
         return new AssetProcessorCollection([
-            new LessAssetProcessor(new \Less_Parser()),
-            new ScssAssetProcessor(new Compiler()),
-            new JsAssetProcessor(new \JSqueeze())
+            new LessAssetProcessor(),
+            new ScssAssetProcessor(),
+            new JsAssetProcessor()
         ]);
     }
 

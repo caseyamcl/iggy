@@ -40,7 +40,7 @@ class PageRoute
     {
         // Any parameters passed into the query string are passed to the template
         $templateData = [
-            'params' => $queryParams
+            'params' => $queryParams->all()
         ];
 
         // Paths to try

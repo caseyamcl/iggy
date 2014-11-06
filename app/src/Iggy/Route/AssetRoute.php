@@ -9,6 +9,7 @@
 namespace Iggy\Route;
 
 use Iggy\AssetProcessor\AssetProcessorCollection;
+use Iggy\AssetProcessor\AssetProcessorException;
 use Iggy\HttpException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,7 +28,7 @@ class AssetRoute
     /**
      * @var string
      */
-    private $assetPath;
+    private $assetBasePath;
 
     // ----------------------------------------------------------------
 
@@ -35,12 +36,12 @@ class AssetRoute
      * Constructor
      *
      * @param AssetProcessorCollection $assetProcessors
-     * @param string $assetPath
+     * @param string $assetBasePath
      */
-    public function __construct(AssetProcessorCollection $assetProcessors, $assetPath)
+    public function __construct(AssetProcessorCollection $assetProcessors, $assetBasePath)
     {
         $this->assetProcessors = $assetProcessors;
-        $this->assetPath = rtrim($assetPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->assetBasePath = rtrim($assetBasePath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
     // ----------------------------------------------------------------
@@ -64,7 +65,13 @@ class AssetRoute
             throw new HttpException(404, 'Invalid asset type');
         }
 
-        return $this->assetProcessors->get($type)->load($this->assetPath . $path);
+        try {
+            return $this->assetProcessors->get($type)->load($this->assetBasePath . $path);
+        }
+        catch (AssetProcessorException $e) {
+            throw new HttpException(404, 'Asset load error', $e, $e->getCode());
+        }
+
     }
 }
 

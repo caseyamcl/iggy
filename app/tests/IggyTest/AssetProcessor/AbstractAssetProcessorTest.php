@@ -82,7 +82,7 @@ abstract class AbstractAssetProcessorTest extends \PHPUnit_Framework_TestCase
      */
     protected function getFixtureDir()
     {
-        return realpath(__DIR__ . '/../Fixtures') . DIRECTORY_SEPARATOR;
+        return realpath(__DIR__ . '/../Fixtures/assets') . DIRECTORY_SEPARATOR;
     }
 }
 
