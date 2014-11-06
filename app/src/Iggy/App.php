@@ -129,7 +129,7 @@ class App
 
         // If the first segment of the path is "_asset", route to asset
         if (substr($pathInfo, 0, strlen('_asset/')) == '_asset/') {
-            $router = new AssetRoute($this->assets);
+            $router = new AssetRoute($this->assets, $this->basePath . '/assets');
             $assetPathInfo = substr($pathInfo, strlen('_asset/'));
             $params = array_replace([null, null], explode('/', $assetPathInfo, 2));
             return call_user_func_array([$router, 'route'], $params);

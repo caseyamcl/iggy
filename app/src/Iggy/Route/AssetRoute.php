@@ -24,16 +24,23 @@ class AssetRoute
      */
     private $assetProcessors;
 
+    /**
+     * @var string
+     */
+    private $assetPath;
+
     // ----------------------------------------------------------------
 
     /**
      * Constructor
      *
      * @param AssetProcessorCollection $assetProcessors
+     * @param string $assetPath
      */
-    public function __construct(AssetProcessorCollection $assetProcessors)
+    public function __construct(AssetProcessorCollection $assetProcessors, $assetPath)
     {
         $this->assetProcessors = $assetProcessors;
+        $this->assetPath = rtrim($assetPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
     // ----------------------------------------------------------------
@@ -57,7 +64,7 @@ class AssetRoute
             throw new HttpException(404, 'Invalid asset type');
         }
 
-        return $this->assetProcessors->get($type)->load($path);
+        return $this->assetProcessors->get($type)->load($this->assetPath . $path);
     }
 }
 

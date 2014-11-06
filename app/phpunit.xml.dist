@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+<phpunit bootstrap="./tests/bootstrap.php" colors="true" beStrictAboutOutputDuringTests="false">
 
     <testsuites>
         <testsuite name="Iggy AbstractAssetProcessorTest Suite">
-            <directory suffix="AbstractAssetProcessorTest.php">./tests</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
 

@@ -23,6 +23,10 @@ trait RecursiveDirParserTrait
      */
     protected function getFileIterator($fileOrDirPath)
     {
+        if ( ! is_readable($fileOrDirPath)) {
+            throw new AssetProcessorException("No asset at" . $fileOrDirPath);
+        }
+
         //If is a file, just return an iterator with a single file
         if (is_file($fileOrDirPath)) {
            $arr = [$fileOrDirPath];
@@ -40,6 +44,28 @@ trait RecursiveDirParserTrait
 
         return new \ArrayIterator($arr);
     }
+
+    // ----------------------------------------------------------------
+
+    /**
+     * Get a string of a whole bunch of files
+     *
+     * Can be memory-intensive
+     *
+     * @param $fileOrDirPath
+     * @return string
+     */
+    protected function getCombinedFiles($fileOrDirPath)
+    {
+        $outStr = '';
+
+        foreach ($this->getFileIterator($fileOrDirPath) as $file) {
+            $outStr .= file_get_contents($file) . PHP_EOL;
+        }
+
+        return $outStr;
+    }
+
 }
 
 /* EOF: RecursiveDirParserTrait.php */ 
