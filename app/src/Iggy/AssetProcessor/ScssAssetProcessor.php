@@ -9,8 +9,13 @@
 namespace Iggy\AssetProcessor;
 
 use Leafo\ScssPhp\Compiler as ScssCompiler;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * SCSS Asset Processor
+ *
+ * @package Iggy\AssetProcessor
+ */
 class ScssAssetProcessor implements AssetProcessorInterface
 {
     // Allow assets that are specified as directories
@@ -30,9 +35,9 @@ class ScssAssetProcessor implements AssetProcessorInterface
      *
      * @param ScssCompiler $scss
      */
-    public function __construct(ScssCompiler $scss)
+    public function __construct(ScssCompiler $scss = null)
     {
-        $this->scss = $scss;
+        $this->scss = $scss ?: new ScssCompiler();
     }
 
     // ----------------------------------------------------------------
@@ -43,16 +48,8 @@ class ScssAssetProcessor implements AssetProcessorInterface
      */
     public function load($path)
     {
-        $parser = clone $this->scss;
-        $files  = $this->getFileIterator($path);
-
-        $streamer = function() use ($parser, $files) {
-            foreach ($files as $file) {
-                echo $parser->compile(file_get_contents($file));
-            }
-        };
-
-        return new StreamedResponse($streamer, 200, ['Content-type' => 'text/css']);
+        $content = $this->scss->compile($this->getCombinedFiles($path));
+        return new Response($content, 200, ['Content-type' => 'text/css']);
     }
 
     // ----------------------------------------------------------------

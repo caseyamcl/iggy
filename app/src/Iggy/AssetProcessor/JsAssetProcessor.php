@@ -34,9 +34,9 @@ class JsAssetProcessor implements AssetProcessorInterface
      *
      * @param \JSqueeze $jSqueeze
      */
-    public function __construct(\JSqueeze $jSqueeze)
+    public function __construct(\JSqueeze $jSqueeze = null)
     {
-        $this->jSqueeze = $jSqueeze;
+        $this->jSqueeze = $jSqueeze ?: new \JSqueeze();
     }
 
     // ----------------------------------------------------------------
