@@ -1,0 +1,34 @@
+{
+    "name": "caseyamcl/iggy",
+    "type": "library",
+    "description": "A library for rapid design work using Twig and your favorite CSS preprocessors.",
+    "homepage": "http://github.com/caseyamcl/iggy",
+    "authors": [
+        {
+            "name":     "Casey McLaughlin",
+            "email":    "caseyamcl@gmail.com",
+            "homepage": "http://caseymclaughlin.com",
+            "role":     "Developer"
+        }
+    ],    
+    "require": {
+        "twig/twig"              : "~1.16",
+
+        "symfony/http-foundation": "~2.5",
+        "symfony/yaml"           : "~2.5",
+
+        "oyejorge/less.php"      : "~1.7",
+        "leafo/scssphp"          : "~0.1",
+        "patchwork/jsqueeze"     : "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit":   "~4.0",
+        "mockery/mockery":   "~0.9"
+    },
+    "autoload": {
+        "psr-0": {
+            "Iggy": "src/",
+            "IggyTest": "tests/"
+        }
+    }
+}
