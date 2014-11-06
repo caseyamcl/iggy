@@ -1,5 +1,7 @@
 <?php
 
+namespace IggyTest\AssetProcessor;
+
 use Iggy\AssetProcessor\AssetProcessorInterface;
 
 /**

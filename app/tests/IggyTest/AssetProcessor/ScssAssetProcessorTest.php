@@ -16,7 +16,7 @@ use Iggy\AssetProcessor\ScssAssetProcessor;
  * Class ScssAssetProcessorTest
  * @package IggyTest\AssetProcessor
  */
-class ScssAssetProcessorTest extends \AbstractAssetProcessorTest
+class ScssAssetProcessorTest extends AbstractAssetProcessorTest
 {
     public function testScssDirReturnsExpectedOutput()
     {

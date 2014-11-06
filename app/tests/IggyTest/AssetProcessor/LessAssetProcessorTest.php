@@ -15,7 +15,7 @@ use Iggy\AssetProcessor\LessAssetProcessor;
  * Class LessAssetProcessorTest
  * @package IggyTest\AssetProcessor
  */
-class LessAssetProcessorTest extends \AbstractAssetProcessorTest
+class LessAssetProcessorTest extends AbstractAssetProcessorTest
 {
     public function testLessDirReturnsExpectedOutput()
     {

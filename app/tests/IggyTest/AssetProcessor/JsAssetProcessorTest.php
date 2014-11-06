@@ -8,7 +8,6 @@
 
 namespace IggyTest\AssetProcessor;
 
-
 use Iggy\AssetProcessor\AssetProcessorInterface;
 use Iggy\AssetProcessor\JsAssetProcessor;
 
@@ -16,7 +15,7 @@ use Iggy\AssetProcessor\JsAssetProcessor;
  * Class JsAssetProcessorTest
  * @package IggyTest\AssetProcessor
  */
-class JsAssetProcessorTest extends \AbstractAssetProcessorTest
+class JsAssetProcessorTest extends AbstractAssetProcessorTest
 {
     public function testJsDirReturnsExpectedOutput()
     {

@@ -3,6 +3,7 @@
 namespace Iggy;
 
 use Iggy\AssetProcessor\AssetProcessorCollection;
+use Iggy\AssetProcessor\FileProcessor;
 use Iggy\AssetProcessor\JsAssetProcessor;
 use Iggy\AssetProcessor\LessAssetProcessor;
 use Iggy\AssetProcessor\ScssAssetProcessor;
@@ -106,6 +107,7 @@ class App
     protected function loadAssetProcessors()
     {
         return new AssetProcessorCollection([
+            new FileProcessor(),
             new LessAssetProcessor(),
             new ScssAssetProcessor(),
             new JsAssetProcessor()
@@ -131,7 +133,7 @@ class App
             $router = new AssetRoute($this->assets, $this->basePath . '/assets');
             $assetPathInfo = substr($pathInfo, strlen('_asset/'));
             $params = array_replace([null, null], explode('/', $assetPathInfo, 2));
-            return call_user_func_array([$router, 'route'], $params);
+            return call_user_func_array([$router, 'handle'], $params);
         }
 
         // If first segment of the path is "_error", preview an error
