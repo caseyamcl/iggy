@@ -4,5 +4,6 @@
     "main": "app/bootstrap.php",
     "output": "dist/iggy.phar",
     "stub": true,
-    "chmod": "0755"
+    "chmod": "0755",
+    "shebang": false
 }
