@@ -65,7 +65,9 @@ class ErrorHandler
     {
         // Try to get the Twig Error
         if ($this->twig) {
-            if ($resp = $this->getTwigTemplateForError($e) instanceOf Response) {
+
+            $resp = $this->getTwigTemplateForError($e);
+            if ($resp instanceOf Response) {
                 return $resp;
             }
         }
