@@ -84,7 +84,8 @@ class ErrorHandler
      */
     protected function getTwigTemplateForError(HttpException $e)
     {
-        // Try the application error code, then the HTTP error code, then just 'error'
+        // Try the application error code, then the
+        // HTTP error code, then just 'error'
         $templatesToTry = array(
           'errors/' . $e->getcode() . '.html.twig',
           'errors/' . $e->getHttpCode() . '.html.twig',
@@ -96,7 +97,7 @@ class ErrorHandler
                 $content = $this->twig->render($file, $e->toArray());
                 return new Response($content, $e->getHttpCode());
             }
-            catch (\Twig_Error_Loader $e) {
+            catch (\Twig_Error_Loader $er) {
                 // pass to proceed in loop
             }
         }
