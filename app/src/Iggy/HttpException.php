@@ -58,6 +58,8 @@ class HttpException extends RuntimeException
     // ----------------------------------------------------------------
 
     /**
+     * Get the HTTP Code
+     *
      * @return int
      */
     public function getHttpCode()
@@ -68,10 +70,9 @@ class HttpException extends RuntimeException
     // ----------------------------------------------------------------
 
     /**
-     * Derive error message
+     * Derive Error Message from HTTP Status Codes
      *
-     * @param int
-     * $httpCode
+     * @param int $httpCode
      * @return string
      */
     protected function deriveMessage($httpCode)
@@ -84,6 +85,8 @@ class HttpException extends RuntimeException
     // ----------------------------------------------------------------
 
     /**
+     * Convert exception to array
+     *
      * @return array
      */
     public function toArray()
