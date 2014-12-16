@@ -35,7 +35,26 @@ class ErrorHandler
 
     // ----------------------------------------------------------------
 
-    public function __construct(\Twig_Environment $twig)
+    /**
+     * Constructor
+     *
+     * @param \Twig_Environment $twig
+     */
+    public function __construct(\Twig_Environment $twig = null)
+    {
+        if ($twig) {
+            $this->setTwig($twig);
+        }
+    }
+
+    // ---------------------------------------------------------------
+
+    /**
+     * Set the Twig Environment
+     *
+     * @param \Twig_Environment $twig
+     */
+    public function setTwig(\Twig_Environment $twig)
     {
         $this->twig = $twig;
     }
@@ -44,11 +63,32 @@ class ErrorHandler
 
     public function handle(HttpException $e)
     {
+        // Try to get the Twig Error
+        if ($this->twig) {
+            if ($resp = $this->getTwigTemplateForError($e) instanceOf Response) {
+                return $resp;
+            }
+        }
+
+        // If made it here, just use a default template
+        return new Response($this->getDefaultHtmlTemplateForError($e), $e->getCode(), ['Content-type' => 'text/html']);
+    }
+
+    // ---------------------------------------------------------------
+
+    /**
+     * Get Twig Template for Error
+     *
+     * @param \Iggy\HttpException $e
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function getTwigTemplateForError(HttpException $e)
+    {
         // Try the application error code, then the HTTP error code, then just 'error'
         $templatesToTry = array(
-            'errors/' . $e->getcode() . '.html.twig',
-            'errors/' . $e->getHttpCode() . '.html.twig',
-            'errors/default.html.twig'
+          'errors/' . $e->getcode() . '.html.twig',
+          'errors/' . $e->getHttpCode() . '.html.twig',
+          'errors/default.html.twig'
         );
 
         foreach ($templatesToTry as $file) {
@@ -60,9 +100,6 @@ class ErrorHandler
                 // pass to proceed in loop
             }
         }
-
-        // If made it here, just use a default template
-        return new Response($this->getDefaultHtmlTemplateForError($e), $e->getCode(), ['Content-type' => 'text/html']);
     }
 
     // ----------------------------------------------------------------
@@ -72,7 +109,7 @@ class ErrorHandler
      * @param HttpException $e
      * @return string
      */
-    private function getDefaultHtmlTemplateForError(HttpException $e)
+    protected function getDefaultHtmlTemplateForError(HttpException $e)
     {
         $str = "
             <!doctype html>

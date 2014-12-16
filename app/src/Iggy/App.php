@@ -83,19 +83,28 @@ class App
                 dirname(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME', FILTER_SANITIZE_STRING))
         );
 
-        $this->twig         = $this->loadTwig($this->basePath . '/content');
-        $this->assets       = $this->loadAssetProcessors();
+        // Build the Error Handler
         $this->errorHandler = new ErrorHandler($this->twig);
     }
 
     // --------------------------------------------------------------
 
+    /**
+     * Run the application
+     */
     public function run()
     {
-        //Get the Request
-        $request = Request::createFromGlobals();
-
         try {
+            //Get the Request
+            $request = Request::createFromGlobals();
+
+            // Setup Twig and Assets
+            $this->twig   = $this->loadTwig($this->basePath . '/content');
+            $this->assets = $this->loadAssetProcessors();
+
+            // Add Twig to the Error Handler
+            $this->errorHandler->setTwig($this->twig);
+
             // Add Twig Extension
             $this->twig->addExtension(new IggyTwigExtension($request, $this->assets));
 
@@ -166,6 +175,12 @@ class App
 
     // --------------------------------------------------------------
 
+    /**
+     * Load the Twig environment
+     *
+     * @param $contentDir
+     * @return \Twig_Environment
+     */
     protected function loadTwig($contentDir)
     {
         //Get Twig
@@ -176,6 +191,14 @@ class App
 
     // ----------------------------------------------------------------
 
+    /**
+     * Handles exceptions and sends error responses
+     *
+     * Also converts non-HTTP exceptions into HTTP 500 exceptions
+     *
+     * @param \Exception $e
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     protected function handleException(\Exception $e)
     {
         if ( ! $e instanceOf HttpException) {
