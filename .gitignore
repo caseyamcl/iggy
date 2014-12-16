@@ -1,1 +1,6 @@
+# Ignore vender directory
 app/vendor
+
+# Ignore IDE stuff
+.idea/workspace.xml
+.idea/tasks.xml
