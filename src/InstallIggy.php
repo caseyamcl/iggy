@@ -42,7 +42,7 @@ class InstallIggy
         }
 
         // Get the current working directory
-        self::recursiveCopy($cwd . '/app/skel', $cwd);
+        self::recursiveCopy(__DIR__ . '/Resource/skel', $cwd);
 
         $event->getIO()->write('Creating skeleton project');
     }

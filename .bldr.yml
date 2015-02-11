@@ -1,0 +1,21 @@
+bldr:
+    name: caseyamcl/iggy
+    profiles: # A list of profiles that can be ran with `./bldr.phar run`
+        build:
+            description: Build the application for deployment
+            jobs:
+                - buildIt
+    jobs:
+        buildIt:
+            description: Build a PHAR of the application
+            tasks:
+                -
+                    type: filesystem:mkdir
+                    files: [/tmp/iggybuild]
+                -
+                    type: exec
+                    executable: composer
+                    arguments: ['create-project', 'caseyamcl/iggy']
+                -
+                    type: filesystem:remove
+                    files: [/tmp/iggybuild]
