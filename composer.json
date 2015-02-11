@@ -27,11 +27,14 @@
         "phpunit/phpunit":   "~4.0",
         "mockery/mockery":   "~0.9"
     },
+    "config": {
+        "vendor-dir": "app/vendor"
+    },
     "autoload": {
-        "psr-4": { "Iggy\\": "src/" }
+        "psr-4": { "Iggy\\": "app/src/" }
     },
     "autoload-dev": {
-        "psr-4": { "IggyTest\\": "tests/" }
+        "psr-4": { "IggyTest\\": "app/tests/" }
     },
     "scripts": {
         "post-create-project-cmd" : [
