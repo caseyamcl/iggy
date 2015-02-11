@@ -1,4 +1,5 @@
 PHPOAIPMH Changelog
 ===================
 
-* v0.1 - Initial Release (2014 Nov 6)
+## Version 0.5
+- Initial Release (2014 Dec 15)
