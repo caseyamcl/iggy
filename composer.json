@@ -1,6 +1,7 @@
 {
     "name": "caseyamcl/iggy",
     "type": "project",
+    "license": "MIT",
     "keywords": ["prototype", "prototyping", "rapid", "iggy", "design"],
     "description": "A library for rapid design work using Twig and your favorite CSS preprocessors.",
     "homepage": "http://github.com/caseyamcl/iggy",
