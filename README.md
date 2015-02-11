@@ -23,7 +23,7 @@ Installation
 To use Iggy, [download the latest release](https://github.com/caseyamcl/iggy/releases) and unzip the `dist` directory:
 
     wget -O iggy.zip https://github.com/caseyamcl/iggy/archive/v0.6.zip
-    unzip iggy.zip "dist/\*"
+    unzip iggy.zip "*/dist/*"
 
 Running It
 ----------
