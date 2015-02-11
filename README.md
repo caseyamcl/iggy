@@ -20,14 +20,19 @@ templates.  It is better than straight HTML in the following ways:
 Installation
 ------------
 
-Use [Composer](http://getcomposer.org) to install Iggy on your system:
+Download the and uncompress the latest release from Github:
+ 
+* [Latest ZIP](https://raw.githubusercontent.com/caseyamcl/iggy/master/dist/iggy.zip)
+* [Latset TAR](https://raw.githubusercontent.com/caseyamcl/iggy/master/dist/iggy.tgz)
 
-    composer create-project caseyamcl/iggy [/path/to/install]
-    
+Or, you can use Composer to create the project:
+
+    composer create-project caseyamcl/iggy
+
 Or, you can download and install it manually:
 
     git clone https://github.com/caseyamcl/iggy.git
-    cp -r app/skel/* .
+    cp -r src/Resource/skel/* . 
 
 Running It
 ----------
@@ -65,7 +70,7 @@ Usage
 The Iggy file structure looks like this:
 
     /path/to/iggy
-        app/          Application sourcecode
+        iggy.phar     Application sourcecode
         index.php     Application runner
         content/      Put your pages and templates in here
         assets/       Put your CSS, JS, images, LESS, SASS, etc. in here
