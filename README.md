@@ -20,10 +20,14 @@ templates.  It is better than straight HTML in the following ways:
 Installation
 ------------
 
-To use Iggy, [download the latest release](https://github.com/caseyamcl/iggy/releases) and unzip the `dist` directory:
+Use [Composer](http://getcomposer.org) to install Iggy on your system:
 
-    wget -O iggy.zip https://github.com/caseyamcl/iggy/archive/v0.6.zip
-    unzip iggy.zip "*/dist/*"
+    composer create-project caseyamcl/iggy [/path/to/install]
+    
+Or, you can download and install it manually:
+
+    git clone https://github.com/caseyamcl/iggy.git
+    cp -r app/skel/* .
 
 Running It
 ----------
@@ -33,7 +37,7 @@ Running It
 If you wish to use PHP's built-in web server to work with Iggy, simply run the following
 in your terminal:
 
-     php -S localhost:8000 /path/to/iggy.phar
+     php -S localhost:8000 index.php
      
 Be sure that you have a `content` and `assets` directory in whatever directory your `iggy.phar` file
 is located.
@@ -47,24 +51,28 @@ To use Iggy on an Apache or NGINX server, rewrite all requests to run `iggy.phar
     RewriteEngine on
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule . iggy.phar [L]
+    RewriteRule . index.php [L]
 
 **NGINX**
 
     location / {
-        try_files $uri $uri/ iggy.phar;
+        try_files $uri $uri/ index.php;
     }
 
 Usage
 -----
 
-Iggy contains two files and two directories:
+The Iggy file structure looks like this:
 
     /path/to/iggy
-        iggy.phar   Application code
-        index.php   Application runner
-        content/    Put your pages and templates in here
-        assets/     Put your CSS, JS, images, LESS, SASS, etc. in here
+        app/          Application sourcecode
+        index.php     Application runner
+        content/      Put your pages and templates in here
+        assets/       Put your CSS, JS, images, LESS, SASS, etc. in here
+        
+        LICENSE       Readme
+        README.md     License
+        CHANGELOG.md  Changelog
 
 ### Create Pages
 
