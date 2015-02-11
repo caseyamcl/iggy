@@ -20,10 +20,13 @@ templates.  It is better than straight HTML in the following ways:
 Installation
 ------------
 
-To use Iggy, download and unzip `iggy.zip` somewhere inside of your document root.  Then, just
-browse to wherever you unzipped the contents to:
+To use Iggy, [download the latest release](https://github.com/caseyamcl/iggy/releases) and unzip the `dist` directory:
 
-    http://your-server/path/to/iggy
+    wget -O iggy.zip https://github.com/caseyamcl/iggy/archive/v0.6.zip
+    unzip iggy.zip "dist/\*"
+
+Running It
+----------
 
 ### Use the PHP Built-In Web server
 
@@ -34,6 +37,23 @@ in your terminal:
      
 Be sure that you have a `content` and `assets` directory in whatever directory your `iggy.phar` file
 is located.
+
+### Use Apache or NGINX
+
+To use Iggy on an Apache or NGINX server, rewrite all requests to run `iggy.phar`:
+
+**Apache**
+
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule . iggy.phar [L]
+
+**NGINX**
+
+    location / {
+        try_files $uri $uri/ iggy.phar;
+    }
 
 Usage
 -----
