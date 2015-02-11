@@ -1,9 +1,0 @@
-{
-    "directories": ["app"],
-    "blacklist": ["app/tests", "app/phpunit.xml.dist"],
-    "main": "app/bootstrap.php",
-    "output": "dist/iggy.phar",
-    "stub": true,
-    "chmod": "0755",
-    "shebang": false
-}

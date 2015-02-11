@@ -1,6 +1,7 @@
 {
     "name": "caseyamcl/iggy",
-    "type": "library",
+    "type": "project",
+    "keywords": ["prototype", "prototyping", "rapid", "iggy", "design"],
     "description": "A library for rapid design work using Twig and your favorite CSS preprocessors.",
     "homepage": "http://github.com/caseyamcl/iggy",
     "authors": [
@@ -15,8 +16,8 @@
         "twig/twig"              : "~1.16",
         "skyzyx/mimetypes"       : "~1.1",
 
-        "symfony/http-foundation": "~2.5",
-        "symfony/yaml"           : "~2.5",
+        "symfony/http-foundation": "~2.6",
+        "symfony/yaml"           : "~2.6",
 
         "oyejorge/less.php"      : "~1.7",
         "leafo/scssphp"          : "~0.1",
@@ -27,9 +28,14 @@
         "mockery/mockery":   "~0.9"
     },
     "autoload": {
-        "psr-0": {
-            "Iggy": "src/",
-            "IggyTest": "tests/"
-        }
+        "psr-4": { "Iggy\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "IggyTest\\": "tests/" }
+    },
+    "scripts": {
+        "post-create-project-cmd" : [
+            "Iggy\\InstallIggy::postCreateProject"
+        ]
     }
 }

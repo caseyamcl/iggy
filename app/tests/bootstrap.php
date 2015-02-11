@@ -28,7 +28,7 @@ $checkFiles[] = __DIR__ . '/../vendor/mockery/mockery/library/Mockery.php';
 // Check that files exist
 foreach($checkFiles as $file) {
     if ( ! file_exists($file)) {
-        die('Install dependencies with --dev option to run test suite (# composer.phar install)' . "\n");
+        die('InstallIggy dependencies with --dev option to run test suite (# composer.phar install)' . "\n");
     }
 }
 
