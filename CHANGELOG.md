@@ -5,7 +5,7 @@ PHPOAIPMH Changelog
 - Added `.gitattributes`
 - Changed to PSR-4 Autloader Standard
 - Added `InstallIggy` and Composer `create-project` hook
-- Changed documentation for installation
+- Changed installation procedure and documentation
 
 ## Version 0.5.1 (2015 Feb 11)
 - Improved documentation
