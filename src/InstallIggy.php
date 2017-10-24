@@ -17,8 +17,6 @@
 
 namespace Iggy;
 
-use Composer\Script\Event;
-
 /**
  * InstallIggy Iggy Composer Command
  *

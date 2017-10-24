@@ -16,8 +16,8 @@
  */
 namespace Iggy;
 
-use Iggy\AssetProcessor\AssetProcessorCollection;
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Http\Message\RequestInterface;
+use Twig\Extension\AbstractExtension;
 
 /**
  * Adds Iggy functions and globals to Twig
@@ -27,96 +27,73 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @package Iggy
  */
-class IggyTwigExtension extends \Twig_Extension
+class IggyTwigExtension extends AbstractExtension
 {
+    const HOME_PATH    = '';
+    const CURRENT_PATH = '___CURRENT____';
+
+    const PATH_ONLY = true;
+    const FULL_URL  = false;
+
     /**
-     * @var Request
+     * @var RequestInterface
      */
     private $request;
 
     /**
-     * @var AssetProcessorCollection
-     */
-    private $assetProcessorCollection;
-
-    // ----------------------------------------------------------------
-
-    /**
      * Constructor
      *
-     * @param Request $request
-     * @param AssetProcessorCollection $assetProcessorCollection
+     * @param RequestInterface $request
      */
-    public function __construct(Request $request, AssetProcessorCollection $assetProcessorCollection)
+    public function __construct(RequestInterface $request)
     {
         $this->request = $request;
-        $this->assetProcessorCollection = $assetProcessorCollection;
     }
-
-    // ----------------------------------------------------------------
-
-    public function getGlobals()
-    {
-        $globals = parent::getGlobals();
-
-        // Add site_url, base_url, and current_url
-        $r =& $this->request;
-
-        $globals['current_url'] = $r->getSchemeAndHttpHost() . $r->getBaseUrl() . $r->getPathInfo();
-
-        return $globals;
-    }
-
-    // ----------------------------------------------------------------
 
     public function getFunctions()
     {
         $funcs = parent::getFunctions();
 
-        // Add asset processor functions
-        foreach ($this->assetProcessorCollection as $asset) {
-            $funcs[] = new \Twig_SimpleFunction($asset->getSlug(), function($path) use ($asset) {
-                return sprintf(
-                    '%s%s/_asset/%s/%s',
-                    $this->request->getSchemeAndHttpHost(),
-                    $this->request->getBaseUrl(),
-                    $asset->getSlug(),
-                    $path
-                );
-            });
-        }
-
-        // Add site_url() and base_url() methods
-        $funcs[] = new \Twig_SimpleFunction('site_url', function($subPath = null) {
-            $siteUrl = $this->request->getSchemeAndHttpHost() . $this->request->getBaseUrl();
-            if ($subPath) {
-                $siteUrl .= '/' . ltrim($subPath, '/');
-            }
-            return $siteUrl;
+        $funcs[] = new \Twig_SimpleFunction('current_path', function() {
+            return $this->getUrl(self::PATH_ONLY, self::CURRENT_PATH);
         });
 
-        $funcs[] = new \Twig_SimpleFunction('base_url', function($subPath = null) {
-            $siteUrl = $this->request->getSchemeAndHttpHost() . $this->request->getBasePath();
-            if ($subPath) {
-                $siteUrl .= '/' . ltrim($subPath, '/');
-            }
-            return $siteUrl;
+        $funcs[] = new \Twig_SimpleFunction('current_url', function() {
+            return $this->getUrl(self::FULL_URL, self::CURRENT_PATH);
+        });
+
+        $funcs[] = new \Twig_SimpleFunction('path', function($path = '') {
+            return $this->getUrl(self::PATH_ONLY, $path);
+        });
+
+        $funcs[] = new \Twig_SimpleFunction('url', function($path = '') {
+            return $this->getUrl(self::FULL_URL, $path);
         });
 
         return $funcs;
     }
 
-    // ----------------------------------------------------------------
-
     /**
-     * Returns the name of the extension.
-     *
-     * @return string The extension name
+     * @param bool $pathOnly
+     * @param string $sub
+     * @return string
      */
-    public function getName()
+    protected function getUrl($pathOnly = self::PATH_ONLY, $sub = self::HOME_PATH)
     {
-        return 'iggy_twig_extension';
+        switch ($sub) {
+            case self::CURRENT_PATH:
+                $outPath = $this->request->getUri()->getPath();
+                break;
+            case self::HOME_PATH;
+                $outPath = '/';
+                break;
+            default:
+                $outPath = '/' . ltrim($sub, '/');
+                break;
+        }
+
+        return $pathOnly
+            ? $outPath
+            : $this->request->getUri()->withPath($outPath)->__toString();
     }
 }
-
-/* EOF: IggyTwigExtension.php */

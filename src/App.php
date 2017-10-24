@@ -1,212 +1,87 @@
 <?php
 
-/**
- * Iggy Rapid Prototyping App
- *
- * @license http://opensource.org/licenses/MIT
- * @link https://github.com/caseyamcl/iggy
- * @version 1.0
- * @package caseyamcl/iggy
- * @author Casey McLaughlin <caseyamcl@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * ------------------------------------------------------------------
- */
-
 namespace Iggy;
 
-use Iggy\AssetProcessor\AssetProcessorCollection;
-use Iggy\AssetProcessor\FileProcessor;
-use Iggy\AssetProcessor\JsAssetProcessor;
-use Iggy\AssetProcessor\LessAssetProcessor;
-use Iggy\AssetProcessor\ScssAssetProcessor;
-use Iggy\Route\AssetRoute;
-use Iggy\Route\PageRoute;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Twig_Loader_Filesystem;
-use Twig_Environment;
+use Iggy\Handler\DecidingHandler;
+use Iggy\Handler\FileHandler;
+use Iggy\Handler\LessHandler;
+use Iggy\Handler\ScssHandler;
+use Iggy\Handler\TwigHandler;
+use Symfony\Component\Console\Application;
+use Twig\Loader\FilesystemLoader;
 
 /**
- * Main Iggy Application
- *
- * @author Casey McLaughlin <caseyamcl@gmail.com>
+ * Class App
+ * @package Iggy
  */
 class App
 {
-    /**
-     * @var string
-     */
-    private $basePath;
+    const AUTO    = '';
+    const VERSION = 1.0;
 
     /**
-     * @var AssetProcessorCollection
+     * @var Application
      */
-    private $assets;
+    private $consoleApp;
 
     /**
-     * @var ErrorHandler
+     * @param string $baseDirectory
      */
-    private $errorHandler;
-
-    /**
-     * @var \Twig_Environment
-     */
-    private $twig;
-
-    // --------------------------------------------------------------
-
-    /**
-     * Static entry to application
-     *
-     * @param string|null $basePath
-     */
-    public static function main($basePath = null)
+    public static function main(string $baseDirectory = self::AUTO)
     {
-        $that = new App($basePath);
+        $that = new static($baseDirectory);
         $that->run();
     }
 
-    // --------------------------------------------------------------
-
     /**
-     * Constructor
+     * App constructor.
      *
-     * @param string|null $basePath
+     * @param string $baseDirectory
      */
-    public function __construct($basePath = null)
+    public function __construct(string $baseDirectory = self::AUTO)
     {
-        // Set the base path
-        $this->basePath = realpath($basePath ?:
-                dirname(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME', FILTER_SANITIZE_STRING))
-        );
+        $baseDirectory = $baseDirectory ?: getcwd();
+        $requestHandler = $this->buildRequestHandler($baseDirectory);
 
-        // Build the Error Handler
-        $this->errorHandler = new ErrorHandler($this->twig);
+        $consoleApp = new Application('Iggy - The Lightweight PHP Twig Dev Environment', static::VERSION);
+        $consoleApp->add(new Console\ServeCommand($requestHandler));
+        $consoleApp->add(new Console\InitCommand($baseDirectory, __DIR__ . '/Resource/skel'));
+        $this->consoleApp = $consoleApp;
     }
 
-    // --------------------------------------------------------------
-
     /**
-     * Run the application
+     * Run the console app
      */
     public function run()
     {
-        try {
-            //Get the Request
-            $request = Request::createFromGlobals();
-
-            // Setup Twig and Assets
-            $this->twig   = $this->loadTwig($this->basePath . '/content');
-            $this->assets = $this->loadAssetProcessors();
-
-            // Add Twig to the Error Handler
-            $this->errorHandler->setTwig($this->twig);
-
-            // Add Twig Extension
-            $this->twig->addExtension(new IggyTwigExtension($request, $this->assets));
-
-            // Route the request and get the response
-            $response = $this->routeRequest($request);
-            $retCode = 0;
-        }
-        catch (\Exception $e) {
-            $response = $this->handleException($e);
-            $retCode = 1;
-        }
-
-        $response->send();
-        exit($retCode);
+        $this->consoleApp->run();
     }
 
-    // --------------------------------------------------------------
-
     /**
-     * Load asset processors
+     * Build the request handler
      *
-     * @return AssetProcessorCollection
+     * @param string $baseDirectory
+     * @return RequestHandler
      */
-    protected function loadAssetProcessors()
+    protected function buildRequestHandler(string $baseDirectory): RequestHandler
     {
-        return new AssetProcessorCollection([
-            new FileProcessor(),
-            new LessAssetProcessor(),
-            new ScssAssetProcessor(),
-            new JsAssetProcessor()
-        ]);
-    }
+        $twigFactory = new TwigFactory(new FilesystemLoader([
+            FilesystemLoader::MAIN_NAMESPACE => $baseDirectory,
+            '@default_error_templates'       => __DIR__ . '/Resource/error_templates'
+        ]));
 
-    // ----------------------------------------------------------------
+        // Setup the file path resolver
+        $fileResolver = new FilePathResolver($baseDirectory);
 
-    /**
-     * Route the request
-     *
-     * Really basic, janky router
-     *
-     * @param Request $request
-     * @return Response
-     */
-    protected function routeRequest(Request $request)
-    {
-        $pathInfo = trim($request->getPathInfo(), '/');
+        // Setup the file handler
+        $fileHandler = (new DecidingHandler())
+            ->registerHandler(new TwigHandler($twigFactory, $baseDirectory), ['twig'])
+            ->registerHandler(new LessHandler(), ['less'])
+            ->registerHandler(new ScssHandler(), ['scss'])
+            ->registerDefaultHandler(new FileHandler());
 
-        // If the first segment of the path is "_asset", route to asset
-        if (substr($pathInfo, 0, strlen('_asset/')) == '_asset/') {
-            $router = new AssetRoute($this->assets, $this->basePath . '/assets');
-            $assetPathInfo = substr($pathInfo, strlen('_asset/'));
-            $params = array_replace([null, null], explode('/', $assetPathInfo, 2));
-            return call_user_func_array([$router, 'handle'], $params);
-        }
+        $errorHandler = new ErrorHandler($twigFactory);
 
-        // If first segment of the path is "_error", preview an error
-        elseif (substr($pathInfo, 0, strlen('_error/')) == '_error/') {
-            $errorName = substr($pathInfo, strlen('_error/'));
-            throw new HttpException((int) $errorName ?: 500);
-        }
-
-        // Route to the page loader (default action)
-        else {
-            $router = new PageRoute($this->twig);
-            return $router->handle($pathInfo, $request->query);
-        }
-    }
-
-    // --------------------------------------------------------------
-
-    /**
-     * Load the Twig environment
-     *
-     * @param $contentDir
-     * @return \Twig_Environment
-     */
-    protected function loadTwig($contentDir)
-    {
-        //Get Twig
-        $loader = new Twig_Loader_Filesystem($contentDir);
-        $twig = new Twig_Environment($loader);
-        return $twig;
-    }
-
-    // ----------------------------------------------------------------
-
-    /**
-     * Handles exceptions and sends error responses
-     *
-     * Also converts non-HTTP exceptions into HTTP 500 exceptions
-     *
-     * @param \Exception $e
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function handleException(\Exception $e)
-    {
-        if ( ! $e instanceOf HttpException) {
-            $e = new HttpException(500, $e->getMessage(), $e, $e->getCode());
-        }
-
-        return $this->errorHandler->handle($e);
+        return new RequestHandler($fileResolver, $fileHandler, $errorHandler);
     }
 }
-
-/* EOF: App.php */

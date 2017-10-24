@@ -1,0 +1,45 @@
+<?php
+
+namespace Iggy\Handler;
+
+use Iggy\HandlerInterface;
+use Mimey\MimeTypes;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use React\Http\Response;
+use RingCentral\Psr7\Stream;
+
+/**
+ * Class FileHandler
+ * @package Iggy\Handler
+ */
+class FileHandler implements HandlerInterface
+{
+    /**
+     * @var MimeTypes
+     */
+    private $mimeTypes;
+
+    /**
+     * FileHandler constructor.
+     * @param MimeTypes|null $mimeTypes
+     */
+    public function __construct(MimeTypes $mimeTypes = null)
+    {
+        $this->mimeTypes = $mimeTypes ?: new MimeTypes();
+    }
+
+    /**
+     * Build a response from a file
+     *
+     * @param \SplFileInfo $file
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     */
+    public function handle(\SplFileInfo $file, RequestInterface $request)
+    {
+        $mimeType = $this->mimeTypes->getMimeType($file->getExtension()) ?: 'application/octet-stream';
+        $stream = new Stream(fopen($file->getRealPath(), 'r'));
+        return new Response($stream, 200, ['Content-type' => $mimeType]);
+    }
+}

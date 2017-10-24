@@ -17,7 +17,9 @@
 
 namespace Iggy;
 
-use Symfony\Component\HttpFoundation\Response;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use React\Http\Response;
 
 /**
  * Iggy Error Handler
@@ -29,116 +31,72 @@ use Symfony\Component\HttpFoundation\Response;
 class ErrorHandler
 {
     /**
-     * @var \Twig_Environment
+     * @var TwigFactory
      */
-    private $twig;
-
-    // ----------------------------------------------------------------
+    private $twigFactory;
 
     /**
      * Constructor
      *
-     * @param \Twig_Environment $twig
+     * @param TwigFactory $twigFactory
      */
-    public function __construct(\Twig_Environment $twig = null)
+    public function __construct(TwigFactory $twigFactory)
     {
-        if ($twig) {
-            $this->setTwig($twig);
-        }
+        $this->twigFactory = $twigFactory;
     }
-
-    // ---------------------------------------------------------------
 
     /**
-     * Set the Twig Environment
-     *
-     * @param \Twig_Environment $twig
+     * @param RequestInterface $request
+     * @param HttpError $error
+     * @return ResponseInterface
      */
-    public function setTwig(\Twig_Environment $twig)
+    public function handle(RequestInterface $request, HttpError $error): ResponseInterface
     {
-        $this->twig = $twig;
-    }
-
-    // ----------------------------------------------------------------
-
-    public function handle(HttpException $e)
-    {
-        // Try to get the Twig Error
-        if ($this->twig) {
-
-            $resp = $this->getTwigTemplateForError($e);
-            if ($resp instanceOf Response) {
-                return $resp;
-            }
+        if ($content = $this->renderTwigError($request, $error)) {
+            return new Response($error->getCode(), ['Content-type' => 'text/html'], $content);
         }
+        else {
 
-        // If made it here, just use a default template
-        return new Response($this->getDefaultHtmlTemplateForError($e), $e->getCode(), ['Content-type' => 'text/html']);
+            $message = trim(sprintf(
+                "%s (Code: %s)\r\n\r\n%s",
+                $error->getMessage(),
+                $error->getCode(),
+                (! empty($error->getData())) ? "Data: " . json_encode($error->getData()) : ''
+            ));
+
+            return new Response($error->getCode(), ['Content-type' => 'text/plain'], $message);
+        }
     }
-
-    // ---------------------------------------------------------------
 
     /**
      * Get Twig Template for Error
      *
-     * @param \Iggy\HttpException $e
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param RequestInterface $request
+     * @param HttpError $error
+     * @return null|string Rendered template (NULL if rendering failed)
      */
-    protected function getTwigTemplateForError(HttpException $e)
+    protected function renderTwigError(RequestInterface $request, HttpError $error): ?string
     {
+        $twig = $this->twigFactory->buildTwig($request);
+
         // Try the application error code, then the
         // HTTP error code, then just 'error'
         $templatesToTry = array(
-          'errors/' . $e->getcode() . '.html.twig',
-          'errors/' . $e->getHttpCode() . '.html.twig',
-          'errors/default.html.twig'
+            'errors/' . $error->getCode() . '.twig',
+            'errors/default.twig',
+            '@default_error_templates/' . $error->getCode() . '.twig',
+            '@default_error_templates/default.twig'
         );
 
         foreach ($templatesToTry as $file) {
             try {
-                $content = $this->twig->render($file, $e->toArray());
-                return new Response($content, $e->getHttpCode());
+                return $twig->render($file, ['error' => $error]);
             }
             catch (\Twig_Error_Loader $er) {
                 // pass to proceed in loop
             }
         }
-    }
 
-    // ----------------------------------------------------------------
-
-    /**
-     * Get default error template
-     * @param HttpException $e
-     * @return string
-     */
-    protected function getDefaultHtmlTemplateForError(HttpException $e)
-    {
-        $str = "
-            <!doctype html>
-
-            <html lang='en'>
-            <head>
-              <meta charset='utf-8'>
-
-              <title>Iggy Error</title>
-              <meta name='description' content='Default Iggy Error Page'>
-            </head>
-
-            <body>
-                <h1>Iggy Error: {$e->getHttpCode()}</h1>
-                <p>{$e->getMessage()}</p>
-                <hr />
-                <p>
-                    Create a default error template ('content/error/error.html.twig')
-                    to avoid seeing this default message.
-                </p>
-            </body>
-            </html>
-        ";
-
-        return $str;
+        return '';
     }
 }
-
-/* EOF: ErrorHandler.php */

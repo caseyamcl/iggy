@@ -26,4 +26,4 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 $basePath = realpath(__DIR__ . '/../');
 
 // ...and run the app!
-\Iggy\App::main($basePath);
+\Iggy\AppOld::main($basePath);
