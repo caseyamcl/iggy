@@ -26,10 +26,10 @@ class RequestHandlerFactory
      */
     public function build(string $basePath): RequestHandler
     {
-        $twigFactory = new TwigFactory(new FilesystemLoader(array_filter([
+        $twigFactory = new TwigFactory(array_filter([
             is_readable($basePath) ? $basePath : null, // 1st
             $this->defaultTemplatesPath                // 2nd
-        ])));
+        ]));
 
         // Setup the file path resolver
         $fileResolver = new FilePathResolver($basePath);

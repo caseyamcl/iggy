@@ -3,7 +3,6 @@
 namespace Iggy\Handler;
 
 use Iggy\HandlerInterface;
-use Iggy\IggyTwigExtension;
 use Iggy\TwigFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

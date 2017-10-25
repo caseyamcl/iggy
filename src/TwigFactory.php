@@ -4,6 +4,7 @@ namespace Iggy;
 
 use Psr\Http\Message\RequestInterface;
 use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Class TwigFactory
@@ -12,18 +13,18 @@ use Twig\Environment;
 class TwigFactory
 {
     /**
-     * @var \Twig_LoaderInterface
+     * @var array|string[]
      */
-    private $loader;
+    private $paths;
 
     /**
      * TwigFactory constructor.
      *
-     * @param \Twig_LoaderInterface $loader  Twig Loader
+     * @param array|string[] $paths
      */
-    public function __construct(\Twig_LoaderInterface $loader)
+    public function __construct(array $paths)
     {
-        $this->loader = $loader;
+        $this->paths = $paths;
     }
 
     /**
@@ -32,7 +33,7 @@ class TwigFactory
      */
     public function buildTwig(RequestInterface $request): Environment
     {
-        $twig = new Environment($this->loader);
+        $twig = new Environment(new FilesystemLoader($this->paths), ['debug' => true]);
         $twig->addExtension(new IggyTwigExtension($request));
         return $twig;
     }
