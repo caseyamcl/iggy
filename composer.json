@@ -17,6 +17,7 @@
         "twig/twig"                   : "^2.4",
         "ralouphie/mimey"             : "^1.0",
         "react/http"                  : "^0.7",
+        "zendframework/zend-diactoros": "^1.6",
         "oyejorge/less.php"           : "^1.7",
         "leafo/scssphp"               : "^0.7",
         "webmozart/path-util"         : "^2.3",

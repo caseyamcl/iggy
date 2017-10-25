@@ -35,7 +35,7 @@ class DecidingHandler implements HandlerInterface
                 ));
             }
 
-            $this->handlerMap[$fileExt] = $handler;
+            $this->handlerMap[trim(strtolower($fileExt))] = $handler;
         }
 
         return $this;
@@ -61,6 +61,7 @@ class DecidingHandler implements HandlerInterface
     public function handle(\SplFileInfo $file, RequestInterface $request)
     {
         $ext = trim(strtolower($file->getExtension()));
+
         if (array_key_exists($ext, $this->handlerMap)) {
             return $this->handlerMap[$ext]->handle($file, $request);
         }

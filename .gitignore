@@ -1,9 +1,9 @@
 # Ignore vender directory
-app/vendor/
+vendor/
 
 # Ignore IDE stuff
 .idea/workspace.xml
 .idea/tasks.xml
 
-# Ignore app/content
-app/content/
+# Ignore data directory
+data/

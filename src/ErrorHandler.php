@@ -84,8 +84,8 @@ class ErrorHandler
         $templatesToTry = array(
             'errors/' . $error->getCode() . '.twig',
             'errors/default.twig',
-            '@default_error_templates/' . $error->getCode() . '.twig',
-            '@default_error_templates/default.twig'
+            '_templates/' . $error->getCode() . '.error.twig',
+            '_templates/default.error.twig',
         );
 
         foreach ($templatesToTry as $file) {

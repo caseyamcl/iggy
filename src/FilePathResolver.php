@@ -29,7 +29,7 @@ class FilePathResolver
      * @param string $basePath
      * @param array $subSearchFiles
      */
-    public function __construct($basePath, array $subSearchFiles = self::DEFAULT)
+    public function __construct(string $basePath, array $subSearchFiles = self::DEFAULT)
     {
         $this->basePath = $basePath;
         $this->subSearchFiles = $subSearchFiles ?: self::$defaultSubSearchFiles;
@@ -44,10 +44,14 @@ class FilePathResolver
         // The specific path that the user asked for (could map to a directory)
         $fullPath = Path::join($this->basePath, $path);
 
-        // Additional paths to search for if the exact path was not matched
-        $searchPaths = array_merge([$fullPath], array_map(function ($pattern) use ($fullPath) {
-            return Path::join($fullPath . $pattern);
-        }, $this->subSearchFiles));
+        if (is_dir($fullPath)) {
+            $searchPaths = array_map(function ($fileName) use ($fullPath) {
+                return Path::join($fullPath, $fileName);
+            }, $this->subSearchFiles);
+        }
+        else {
+            $searchPaths = [$fullPath];
+        }
 
         // Do the search
         foreach ($searchPaths as $path) {

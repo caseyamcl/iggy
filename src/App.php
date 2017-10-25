@@ -2,13 +2,10 @@
 
 namespace Iggy;
 
-use Iggy\Handler\DecidingHandler;
-use Iggy\Handler\FileHandler;
-use Iggy\Handler\LessHandler;
-use Iggy\Handler\ScssHandler;
-use Iggy\Handler\TwigHandler;
 use Symfony\Component\Console\Application;
-use Twig\Loader\FilesystemLoader;
+use Webmozart\PathUtil\Path;
+use Zend\Diactoros\Response\SapiEmitter;
+use Zend\Diactoros\ServerRequestFactory;
 
 /**
  * Class App
@@ -16,7 +13,6 @@ use Twig\Loader\FilesystemLoader;
  */
 class App
 {
-    const AUTO    = '';
     const VERSION = 1.0;
 
     /**
@@ -25,27 +21,50 @@ class App
     private $consoleApp;
 
     /**
-     * @param string $baseDirectory
+     * @var RequestHandlerFactory
      */
-    public static function main(string $baseDirectory = self::AUTO)
+    private $requestHandlerFactory;
+
+    /**
+     * Run Console App
+     */
+    public static function console(): void
     {
-        $that = new static($baseDirectory);
-        $that->run();
+        $that = new static();
+        $that->consoleApp->run();
+    }
+
+    /**
+     * Handle requests from an outside server (Apache, NGINX, etc.)
+     *
+     * @param string $contentDir  The full system path to the content (defaults ./content)
+     */
+    public static function request(string $contentDir = ''): void
+    {
+        $that = new static();
+
+        // Handle the request
+        $handler = $that->requestHandlerFactory->build($contentDir ?: Path::join(__DIR__, 'content'));
+        $emitter = new SapiEmitter();
+
+        // Build a request
+        $request = ServerRequestFactory::fromGlobals();
+        $response = $handler->handle($request);
+
+        $emitter->emit($response);
+        exit(0);
     }
 
     /**
      * App constructor.
-     *
-     * @param string $baseDirectory
      */
-    public function __construct(string $baseDirectory = self::AUTO)
+    public function __construct()
     {
-        $baseDirectory = $baseDirectory ?: getcwd();
-        $requestHandler = $this->buildRequestHandler($baseDirectory);
+        $this->requestHandlerFactory = new RequestHandlerFactory(__DIR__ . '/Resource/default_templates');
 
         $consoleApp = new Application('Iggy - The Lightweight PHP Twig Dev Environment', static::VERSION);
-        $consoleApp->add(new Console\ServeCommand($requestHandler));
-        $consoleApp->add(new Console\InitCommand($baseDirectory, __DIR__ . '/Resource/skel'));
+        $consoleApp->add(new Console\ServeCommand($this->requestHandlerFactory));
+        $consoleApp->add(new Console\InitCommand(__DIR__ . '/Resource/skel'));
         $this->consoleApp = $consoleApp;
     }
 
@@ -54,34 +73,6 @@ class App
      */
     public function run()
     {
-        $this->consoleApp->run();
-    }
 
-    /**
-     * Build the request handler
-     *
-     * @param string $baseDirectory
-     * @return RequestHandler
-     */
-    protected function buildRequestHandler(string $baseDirectory): RequestHandler
-    {
-        $twigFactory = new TwigFactory(new FilesystemLoader([
-            FilesystemLoader::MAIN_NAMESPACE => $baseDirectory,
-            '@default_error_templates'       => __DIR__ . '/Resource/error_templates'
-        ]));
-
-        // Setup the file path resolver
-        $fileResolver = new FilePathResolver($baseDirectory);
-
-        // Setup the file handler
-        $fileHandler = (new DecidingHandler())
-            ->registerHandler(new TwigHandler($twigFactory, $baseDirectory), ['twig'])
-            ->registerHandler(new LessHandler(), ['less'])
-            ->registerHandler(new ScssHandler(), ['scss'])
-            ->registerDefaultHandler(new FileHandler());
-
-        $errorHandler = new ErrorHandler($twigFactory);
-
-        return new RequestHandler($fileResolver, $fileHandler, $errorHandler);
     }
 }

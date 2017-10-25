@@ -2,7 +2,6 @@
 
 namespace Iggy;
 
-use Iggy\Handler\FileHandler;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -42,6 +41,14 @@ class RequestHandler
         $this->fileResolver = $filePathResolver;
         $this->fileHandler = $handler;
         $this->errorHandler = $errorHandler;
+    }
+
+    /**
+     * @return ErrorHandler
+     */
+    public function getErrorHandler(): ErrorHandler
+    {
+        return $this->errorHandler;
     }
 
     /**

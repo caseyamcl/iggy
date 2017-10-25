@@ -19,11 +19,8 @@
  * Bootstrap/Index file
  */
 
-// Require the autoloader
-require_once(__DIR__ . '/../vendor/autoload.php');
+// Require the autoloader and run the file
+require_once(__DIR__ . '/vendor/autoload.php');
 
-// Determine the path
-$basePath = realpath(__DIR__ . '/../');
-
-// ...and run the app!
-\Iggy\AppOld::main($basePath);
+// Execute!
+(php_sapi_name() == 'cli') ? Iggy\App::console() : Iggy\App::request(__DIR__ . '/content');

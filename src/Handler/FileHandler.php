@@ -40,6 +40,6 @@ class FileHandler implements HandlerInterface
     {
         $mimeType = $this->mimeTypes->getMimeType($file->getExtension()) ?: 'application/octet-stream';
         $stream = new Stream(fopen($file->getRealPath(), 'r'));
-        return new Response($stream, 200, ['Content-type' => $mimeType]);
+        return new Response(200, ['Content-type' => $mimeType], $stream);
     }
 }
