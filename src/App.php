@@ -27,6 +27,7 @@ class App
 
     /**
      * Run Console App
+     * @throws \Exception
      */
     public static function console(): void
     {

@@ -33,7 +33,7 @@ class TwigHandler implements HandlerInterface
      */
     public function __construct(TwigFactory $twigFactory, $basePath)
     {
-        $this->basePath = $basePath;
+        $this->basePath    = $basePath;
         $this->twigFactory = $twigFactory;
     }
 
@@ -41,10 +41,13 @@ class TwigHandler implements HandlerInterface
      * @param \SplFileInfo $file
      * @param RequestInterface $request
      * @return ResponseInterface
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function handle(\SplFileInfo $file, RequestInterface $request)
     {
-        $twig = $this->twigFactory->buildTwig($request);
+        $twig = $this->twigFactory->getTwigEnvironment($request);
         $relativePath = trim(Path::makeRelative($file->getRealPath(), $this->basePath), '/');
         return new Response(200, ['Content-Type' => 'text/html'], $twig->render($relativePath));
     }

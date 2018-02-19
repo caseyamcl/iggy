@@ -1,3 +1,11 @@
+2018-02-19:
+
+- A few things to try to fool Twig into regenerating templates per request:
+  1. Does simply building a new Twig Environment work?  If not, then...
+  2. Consider creating a loader that wraps another loader, and it generates a psuedo-random template name for
+     the template for every request, thus making Twig think that the template name is different even though it is the
+     same.  For example, add a `--uniqid` to the end of the template name, and then strip it out in the loader.  Dunno.
+
 TODO:
 
 1. Make LESS and SCSS pre-processors fall back to using built-in LESS or SCSS when they are available.

@@ -49,6 +49,8 @@ class ErrorHandler
      * @param RequestInterface $request
      * @param HttpError $error
      * @return ResponseInterface
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function handle(RequestInterface $request, HttpError $error): ResponseInterface
     {
@@ -74,10 +76,12 @@ class ErrorHandler
      * @param RequestInterface $request
      * @param HttpError $error
      * @return null|string Rendered template (NULL if rendering failed)
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     protected function renderTwigError(RequestInterface $request, HttpError $error): ?string
     {
-        $twig = $this->twigFactory->buildTwig($request);
+        $twig = $this->twigFactory->getTwigEnvironment($request);
 
         // Try the application error code, then the
         // HTTP error code, then just 'error'

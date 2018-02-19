@@ -18,6 +18,11 @@ class TwigFactory
     private $paths;
 
     /**
+     * @var IggyTwigExtension
+     */
+    private $twigExtension;
+
+    /**
      * TwigFactory constructor.
      *
      * @param array|string[] $paths
@@ -25,16 +30,18 @@ class TwigFactory
     public function __construct(array $paths)
     {
         $this->paths = $paths;
+        $this->twig = new Environment(new FilesystemLoader($this->paths), ['debug' => true]);
+        $this->twigExtension = new IggyTwigExtension();
+        $this->twig->addExtension($this->twigExtension);
     }
 
     /**
      * @param RequestInterface $request
      * @return Environment
      */
-    public function buildTwig(RequestInterface $request): Environment
+    public function getTwigEnvironment(RequestInterface $request): Environment
     {
-        $twig = new Environment(new FilesystemLoader($this->paths), ['debug' => true]);
-        $twig->addExtension(new IggyTwigExtension($request));
-        return $twig;
+        $this->twigExtension->setRequest($request);
+        return $this->twig;
     }
 }

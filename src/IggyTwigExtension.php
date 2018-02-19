@@ -36,7 +36,7 @@ class IggyTwigExtension extends AbstractExtension
     const FULL_URL  = false;
 
     /**
-     * @var RequestInterface
+     * @var RequestInterface|null
      */
     private $request;
 
@@ -45,10 +45,18 @@ class IggyTwigExtension extends AbstractExtension
      *
      * @param RequestInterface $request
      */
-    public function __construct(RequestInterface $request)
+    public function __construct(RequestInterface $request = null)
+    {
+        if ($request) {
+            $this->setRequest($request);
+        }
+    }
+
+    public function setRequest(RequestInterface $request)
     {
         $this->request = $request;
     }
+
 
     public function getFunctions()
     {
@@ -80,6 +88,13 @@ class IggyTwigExtension extends AbstractExtension
      */
     protected function getUrl($pathOnly = self::PATH_ONLY, $sub = self::HOME_PATH)
     {
+        if (! $this->request) {
+            throw new \LogicException(sprintf(
+                "Cannot call %s::getUrl() without having setRequest()",
+                get_called_class()
+            ));
+        }
+
         switch ($sub) {
             case self::CURRENT_PATH:
                 $outPath = $this->request->getUri()->getPath();
