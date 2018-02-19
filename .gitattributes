@@ -9,3 +9,4 @@
 /.bldr.yml              export-ignore
 /app/tests              export-ignore
 /app/phpunit.xml.dist   export-ignore
+/.idea                  export-ignore
