@@ -21,7 +21,7 @@
         "oyejorge/less.php"           : "^1.7",
         "leafo/scssphp"               : "^0.7",
         "webmozart/path-util"         : "^2.3",
-        "symfony/console"             : "^3.3"
+        "symfony/console"             : "^4.0"
     },
     "require-dev": {
         "phpunit/phpunit":   "~4.0",
