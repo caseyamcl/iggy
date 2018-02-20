@@ -50,8 +50,8 @@ class TwigHandler implements HandlerInterface
     {
         $twig = $this->twigFactory->getTwigEnvironment($request);
         $relativePath = trim(Path::makeRelative($file->getRealPath(), $this->basePath), '/');
-        return new Response(200, ['Content-Type' => 'text/html'], $twig->render($relativePath), [
+        return new Response(200, ['Content-Type' => 'text/html'], $twig->render($relativePath, [
             'query' => $request->getQueryParams()
-        ]);
+        ]));
     }
 }

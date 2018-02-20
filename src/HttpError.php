@@ -20,6 +20,7 @@ class HttpError extends \RuntimeException
     /**
      * @param \Throwable $e
      * @return HttpError
+     * @throws \ReflectionException
      */
     public static function fromThrowable(\Throwable $e)
     {
@@ -34,6 +35,7 @@ class HttpError extends \RuntimeException
      * @param string $message
      * @param array $data
      * @param \Throwable $prior
+     * @throws \ReflectionException
      */
     public function __construct(int $code = 500, string $message = self::AUTO, array $data = [], \Throwable $prior = null)
     {
@@ -52,6 +54,7 @@ class HttpError extends \RuntimeException
     /**
      * @param int $code
      * @return string
+     * @throws \ReflectionException
      */
     private function autoMessage(int $code): string
     {

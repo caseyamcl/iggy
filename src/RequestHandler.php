@@ -2,8 +2,8 @@
 
 namespace Iggy;
 
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class RequestHandler
@@ -54,10 +54,13 @@ class RequestHandler
     /**
      * Handle request
      *
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      * @return ResponseInterface
+     * @throws \ReflectionException
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
-    public function handle(RequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         try {
             // If path can be resolved to a file, then

@@ -27,7 +27,6 @@ class App
 
     /**
      * Run Console App
-     * @throws \Exception
      */
     public static function console(): void
     {
@@ -38,7 +37,10 @@ class App
     /**
      * Handle requests from an outside server (Apache, NGINX, etc.)
      *
-     * @param string $contentDir  The full system path to the content (defaults ./content)
+     * @param string $contentDir The full system path to the content (defaults ./content)
+     * @throws \ReflectionException
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public static function request(string $contentDir = ''): void
     {
@@ -67,13 +69,5 @@ class App
         $consoleApp->add(new Console\ServeCommand($this->requestHandlerFactory));
         $consoleApp->add(new Console\InitCommand(__DIR__ . '/Resource/skel'));
         $this->consoleApp = $consoleApp;
-    }
-
-    /**
-     * Run the console app
-     */
-    public function run()
-    {
-
     }
 }

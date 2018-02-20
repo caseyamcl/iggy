@@ -3,6 +3,7 @@
 namespace Iggy\Console;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,15 +19,21 @@ class InitCommand extends Command
      * @var string
      */
     private $skelDirectory;
+    /**
+     * @var bool
+     */
+    private $allowPathArgument;
 
     /**
      * InitCommand constructor.
      *
      * @param string $skelDirectory
+     * @param bool $allowPathArgument
      */
-    public function __construct(string $skelDirectory)
+    public function __construct(string $skelDirectory, bool $allowPathArgument = true)
     {
         $this->skelDirectory = $skelDirectory;
+        $this->allowPathArgument = $allowPathArgument;
         parent::__construct();
     }
 
@@ -34,8 +41,11 @@ class InitCommand extends Command
     {
         $this->setName('init');
         $this->setDescription('Initialize a basic Iggy template site in this (or the specified) directory');
-        $this->addOption('path', 'p', InputOption::VALUE_REQUIRED, 'The path to deploy to', getcwd());
         $this->addOption('force',  'f', InputOption::VALUE_REQUIRED, 'Deploy even if directory is not empty');
+
+        if ($this->allowPathArgument) {
+            $this->addArgument('path', InputArgument::OPTIONAL, 'The path to deploy to', getcwd());
+        }
     }
 
     /**

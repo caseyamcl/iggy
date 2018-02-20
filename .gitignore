@@ -5,5 +5,5 @@ vendor/
 .idea/workspace.xml
 .idea/tasks.xml
 
-# Ignore data directory
-data/
+# Ignore content directory
+content/

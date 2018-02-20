@@ -15,28 +15,33 @@ class RequestHandlerFactory
      */
     private $defaultTemplatesPath;
 
-    public function __construct(string $defaultTemplatesPath)
+    /**
+     * RequestHandlerFactory constructor.
+     *
+     * @param string|null $defaultTemplatesPath
+     */
+    public function __construct(string $defaultTemplatesPath = null)
     {
-        $this->defaultTemplatesPath = $defaultTemplatesPath;
+        $this->defaultTemplatesPath = $defaultTemplatesPath ?: __DIR__ . '/Resource/default_templates';
     }
 
     /**
-     * @param string $basePath
+     * @param string $contentPath
      * @return RequestHandler
      */
-    public function build(string $basePath): RequestHandler
+    public function build(string $contentPath): RequestHandler
     {
         $twigFactory = new TwigFactory(array_filter([
-            is_readable($basePath) ? $basePath : null, // 1st
+            is_readable($contentPath) ? $contentPath : null, // 1st
             $this->defaultTemplatesPath                // 2nd
         ]));
 
         // Setup the file path resolver
-        $fileResolver = new FilePathResolver($basePath);
+        $fileResolver = new FilePathResolver($contentPath);
 
         // Setup the file handler
         $fileHandler = (new Handler\DecidingHandler())
-            ->registerHandler(new Handler\TwigHandler($twigFactory, $basePath), ['twig'])
+            ->registerHandler(new Handler\TwigHandler($twigFactory, $contentPath), ['twig'])
             ->registerHandler(new Handler\LessHandler(), ['less'])
             ->registerHandler(new Handler\ScssHandler(), ['scss'])
             ->registerDefaultHandler(new Handler\FileHandler());

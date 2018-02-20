@@ -25,23 +25,35 @@ class ServeCommand extends Command
     private $requestHandlerFactory;
 
     /**
+     * @var bool
+     */
+    private $allowOptions;
+
+    /**
      * ServeCommand constructor.
      * @param RequestHandlerFactory $requestHandlerFactory
+     * @param bool $allowOptions
      */
-    public function __construct(RequestHandlerFactory $requestHandlerFactory)
+    public function __construct(RequestHandlerFactory $requestHandlerFactory, bool $allowOptions = true)
     {
         $this->requestHandlerFactory = $requestHandlerFactory;
+        $this->allowOptions = $allowOptions;
+
         parent::__construct();
+
     }
 
     protected function configure()
     {
         $this->setName('serve');
         $this->setDescription('Run Iggy development server');
-        $this->addOption('listen', 'l', InputOption::VALUE_REQUIRED, 'interface to listen on (0.0.0.0 for all)', '0.0.0.0');
-        $this->addOption('port', 'p', InputOption::VALUE_REQUIRED, 'TCP port to listen on', 8000);
-        $this->addOption('path', '', InputOption::VALUE_REQUIRED, 'Path to serve', getcwd());
-        $this->addOption('single', 's', InputOption::VALUE_NONE, 'Exit after first request is handled');
+
+        if ($this->allowOptions) {
+            $this->addOption('listen', 'l', InputOption::VALUE_REQUIRED, 'interface to listen on (0.0.0.0 for all)', '0.0.0.0');
+            $this->addOption('port', 'p', InputOption::VALUE_REQUIRED, 'TCP port to listen on', 8000);
+
+            $this->addArgument('path', InputArgument::OPTIONAL, 'The path to deploy to', getcwd());
+        }
     }
 
     /**
