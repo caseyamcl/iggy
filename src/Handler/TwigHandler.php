@@ -6,6 +6,7 @@ use Iggy\HandlerInterface;
 use Iggy\Twig\TwigFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Response;
 use Webmozart\PathUtil\Path;
 
@@ -39,16 +40,18 @@ class TwigHandler implements HandlerInterface
 
     /**
      * @param \SplFileInfo $file
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      * @return ResponseInterface
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function handle(\SplFileInfo $file, RequestInterface $request)
+    public function handle(\SplFileInfo $file, ServerRequestInterface $request): ResponseInterface
     {
         $twig = $this->twigFactory->getTwigEnvironment($request);
         $relativePath = trim(Path::makeRelative($file->getRealPath(), $this->basePath), '/');
-        return new Response(200, ['Content-Type' => 'text/html'], $twig->render($relativePath));
+        return new Response(200, ['Content-Type' => 'text/html'], $twig->render($relativePath), [
+            'query' => $request->getQueryParams()
+        ]);
     }
 }

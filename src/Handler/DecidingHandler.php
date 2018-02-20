@@ -3,8 +3,8 @@
 namespace Iggy\Handler;
 
 use Iggy\HandlerInterface;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class DecidingHandler
@@ -55,10 +55,10 @@ class DecidingHandler implements HandlerInterface
      * Read a file and generate a HTTP response
      *
      * @param \SplFileInfo $file
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    public function handle(\SplFileInfo $file, RequestInterface $request)
+    public function handle(\SplFileInfo $file, ServerRequestInterface $request): ResponseInterface
     {
         $ext = trim(strtolower($file->getExtension()));
 

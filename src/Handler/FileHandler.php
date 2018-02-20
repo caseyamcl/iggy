@@ -4,8 +4,8 @@ namespace Iggy\Handler;
 
 use Iggy\HandlerInterface;
 use Mimey\MimeTypes;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Response;
 use RingCentral\Psr7\Stream;
 
@@ -33,10 +33,10 @@ class FileHandler implements HandlerInterface
      * Build a response from a file
      *
      * @param \SplFileInfo $file
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    public function handle(\SplFileInfo $file, RequestInterface $request)
+    public function handle(\SplFileInfo $file, ServerRequestInterface $request): ResponseInterface
     {
         $mimeType = $this->mimeTypes->getMimeType($file->getExtension()) ?: 'application/octet-stream';
         $stream = new Stream(fopen($file->getRealPath(), 'r'));
