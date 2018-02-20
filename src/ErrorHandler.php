@@ -17,6 +17,7 @@
 
 namespace Iggy;
 
+use Iggy\Twig\TwigFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use React\Http\Response;

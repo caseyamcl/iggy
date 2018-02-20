@@ -2,7 +2,7 @@
 
 namespace Iggy;
 
-use Twig\Loader\FilesystemLoader;
+use Iggy\Twig\TwigFactory;
 
 /**
  * Class RequestHandlerFactory
@@ -32,7 +32,7 @@ class RequestHandlerFactory
         ]));
 
         // Setup the file path resolver
-        $fileResolver = new FilePathResolver($basePath, 'index', TwigFilesystemLoader::DEFAULT_EXTENSIONS);
+        $fileResolver = new FilePathResolver($basePath);
 
         // Setup the file handler
         $fileHandler = (new Handler\DecidingHandler())

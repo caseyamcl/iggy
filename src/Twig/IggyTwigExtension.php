@@ -14,7 +14,7 @@
  *
  * ------------------------------------------------------------------
  */
-namespace Iggy;
+namespace Iggy\Twig;
 
 use Psr\Http\Message\RequestInterface;
 use Twig\Extension\AbstractExtension;

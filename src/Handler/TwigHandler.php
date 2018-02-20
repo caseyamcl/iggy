@@ -3,7 +3,7 @@
 namespace Iggy\Handler;
 
 use Iggy\HandlerInterface;
-use Iggy\TwigFactory;
+use Iggy\Twig\TwigFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use React\Http\Response;
