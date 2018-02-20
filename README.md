@@ -357,5 +357,8 @@ Due to a [fundamental design decision in Twig](https://github.com/twigphp/Twig/i
 leak.  If you load too many page requests (thousands upon thousands), Iggy may crash due to memory allocation failure.
 In this case, simply restart Iggy.  This is just another reason not to run Iggy in a production environment.  
 
+This memory leak does not exist when running under a shared web host, or when using the built-in PHP server.  It affects
+the command-line application and the Docker application.
+
 If you absolutely need to keep Iggy running, you can use a tool like [supervisor](http://supervisord.org/) to auto-restart
 Iggy when it crashes.
