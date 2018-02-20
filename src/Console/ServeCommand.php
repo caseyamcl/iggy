@@ -2,6 +2,7 @@
 
 namespace Iggy\Console;
 
+use Iggy\ConsoleIO;
 use Iggy\RequestHandlerFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use React\EventLoop\Factory;
@@ -11,7 +12,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Class ServeCommand
@@ -51,7 +51,7 @@ class ServeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
+        $io = new ConsoleIO($input, $output);
         $workDir = realpath($input->getOption('path'));
 
         if (! $workDir) {
@@ -70,11 +70,32 @@ class ServeCommand extends Command
         $loop   = Factory::create();
         $socket = new SocketServer($uri, $loop);
 
-        $server = new Server(function(ServerRequestInterface $request) use ($requestHandler) {
-            return $requestHandler->handle($request);
+        $server = new Server(function(ServerRequestInterface $request) use ($requestHandler, $io) {
+            $io->log(sprintf('<info>> REQ</info>  %s', $request->getUri()->__toString()));
+            $response = $requestHandler->handle($request);
+
+            if ($response->getStatusCode() >= 400) {
+                $io->log(sprintf(
+                    '<fg=red>< RESP %s</fg=red> %s',
+                    $response->getStatusCode(),
+                    $response->getReasonPhrase()
+                ));
+            }
+            else {
+                $io->log(sprintf(
+                    '<info>< RESP %s</info> %s (%s)',
+                    $response->getStatusCode(),
+                    $response->getReasonPhrase(),
+                    $response->getBody()->getSize() !== null
+                        ? \ByteUnits\bytes($response->getBody()->getSize())->format()
+                        : 'streamed'
+                ));
+            }
+
+            return $response;
         });
 
-        $io->writeln(sprintf('Serving <info>%s</info> on <info>%s</info>', $workDir, $uri));
+        $io->log(sprintf('Serving <info>%s</info> on <info>%s</info>', $workDir, $uri));
 
         $server->listen($socket);
         $loop->run();
