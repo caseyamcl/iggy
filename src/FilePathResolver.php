@@ -11,8 +11,6 @@ class FilePathResolver
 {
     const DEFAULT = null;
 
-    private static $defaultSubSearchFiles = ['index.twig', 'index.html', 'index.htm'];
-
     /**
      * @var string
      */
@@ -21,46 +19,46 @@ class FilePathResolver
     /**
      * @var array|string[]
      */
-    private $subSearchFiles;
+    private $indexBaseName;
+
+    /**
+     * @var array|string[]
+     */
+    private $defaultExtensions;
 
     /**
      * RequestFileResolver constructor.
      *
      * @param string $basePath
-     * @param array $subSearchFiles
+     * @param string $indexBasename
+     * @param array $defaultExtensions
      */
-    public function __construct(string $basePath, array $subSearchFiles = self::DEFAULT)
+    public function __construct(string $basePath, string $indexBasename = 'index', array $defaultExtensions = [])
     {
         $this->basePath = $basePath;
-        $this->subSearchFiles = $subSearchFiles ?: self::$defaultSubSearchFiles;
+        $this->indexBaseName = $indexBasename;
+        $this->defaultExtensions = $defaultExtensions;
     }
 
     /**
      * @param string $path  The path section of the URI
      * @return \SplFileInfo|null
      */
-    public function resolvePath($path)
+    public function resolvePath($path): ?\SplFileInfo
     {
-        // The specific path that the user asked for (could map to a directory)
-        $fullPath = Path::join($this->basePath, $path);
-
-        if (is_dir($fullPath)) {
-            $searchPaths = array_map(function ($fileName) use ($fullPath) {
-                return Path::join($fullPath, $fileName);
-            }, $this->subSearchFiles);
-        }
-        else {
-            $searchPaths = [$fullPath];
+        if (is_readable(Path::join($this->basePath, $path))) {
+            return new \SplFileInfo(Path::join($this->basePath, $path));
         }
 
-        // Do the search
-        foreach ($searchPaths as $path) {
-            if (is_readable($path)) {
-                return new \SplFileInfo($path);
+        foreach ($this->defaultExtensions as $extension) {
+            $fn = Path::join($this->basePath, $path . '.' . ltrim($extension, '.'));
+            if (is_readable($fn)) {
+                return new \SplFileInfo($fn);
             }
         }
 
-        // If made it here.
+        // If made it here, return NULL (will be interpreted as 404)
         return null;
     }
+
 }

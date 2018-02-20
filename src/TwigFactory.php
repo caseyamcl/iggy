@@ -41,19 +41,19 @@ class TwigFactory
         // Thanks, https://github.com/CouscousPHP/Couscous/
         // But.. this loads all file content into memory for every request.  Very memory inefficient.
         // TODO: Figure out something better.
-        $finder = new Finder();
+        /*$finder = new Finder();
         $finder->files()->in($this->paths)->name('*.twig');
         $layouts = [];
 
         foreach ($finder as $file) {
-            /** @var SplFileInfo $file */
+            /** @var SplFileInfo $file *//*
             $name = $file->getFilename();
             $layouts[$name] = $file->getContents();
         }
 
-        $loader = new Twig_Loader_Array($layouts);
+        $loader = new Twig_Loader_Array($layouts);*/
 
-        $twig = new Environment($loader, [
+        $twig = new Environment(new TwigFilesystemLoader($this->paths), [
             'debug'       => true,
             'auto_reload' => true,
             'cache'       => false

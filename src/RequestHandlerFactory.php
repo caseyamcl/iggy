@@ -32,7 +32,7 @@ class RequestHandlerFactory
         ]));
 
         // Setup the file path resolver
-        $fileResolver = new FilePathResolver($basePath);
+        $fileResolver = new FilePathResolver($basePath, 'index', TwigFilesystemLoader::DEFAULT_EXTENSIONS);
 
         // Setup the file handler
         $fileHandler = (new Handler\DecidingHandler())
