@@ -75,6 +75,7 @@ class RequestHandler
             }
         }
         catch (\Throwable $e) {
+            error_log($e);
             return $this->errorHandler->handle($request, HttpError::fromThrowable($e));
         }
     }

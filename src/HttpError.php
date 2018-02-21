@@ -24,7 +24,6 @@ class HttpError extends \RuntimeException
      */
     public static function fromThrowable(\Throwable $e)
     {
-        error_log($e);
         return new static(500, $e->getMessage(), ['trace' => $e->getTrace()], $e);
     }
 

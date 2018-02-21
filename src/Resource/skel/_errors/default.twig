@@ -8,6 +8,6 @@
         <h2>Whoops!  That's an error</h2>
         <p>The site generated a <strong>{{ httpCode }}</strong> error.</p>
         <hr />
-        <p>The server said: <em>{{ message }}</em></p>
+        {% if message %}<p>The server said: <em>{{ message }}</em></p>{% endif %}
     {% endblock %}
 {% endblock %}

@@ -33,7 +33,7 @@ class RequestHandlerFactory
     {
         $twigFactory = new TwigFactory(array_filter([
             is_readable($contentPath) ? $contentPath : null, // 1st
-            $this->defaultTemplatesPath                // 2nd
+            $this->defaultTemplatesPath                      // 2nd
         ]));
 
         // Setup the file path resolver
