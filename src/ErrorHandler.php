@@ -87,8 +87,8 @@ class ErrorHandler
         // Try the application error code, then the
         // HTTP error code, then just 'error'
         $templatesToTry = array(
-            'errors/' . $error->getCode() . '.twig',
-            'errors/default.twig',
+            '_errors/' . $error->getCode() . '.twig',
+            '_errors/default.twig',
             '_templates/' . $error->getCode() . '.error.twig',
             '_templates/default.error.twig',
         );
