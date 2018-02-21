@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class InitCommand
@@ -30,10 +31,11 @@ class InitCommand extends Command
      * @param string $skelDirectory
      * @param bool $allowPathArgument
      */
-    public function __construct(string $skelDirectory, bool $allowPathArgument = true)
+    public function __construct(string $skelDirectory = null, bool $allowPathArgument = true)
     {
-        $this->skelDirectory = $skelDirectory;
+        $this->skelDirectory     = $skelDirectory ?: __DIR__ . '/../Resource/skel/';
         $this->allowPathArgument = $allowPathArgument;
+
         parent::__construct();
     }
 
@@ -58,7 +60,7 @@ class InitCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $outPath = $input->getOption('path');
+        $outPath = $input->getArgument('path');
 
         if (! is_writable($outPath)) {
             throw new \RuntimeException('Output path is not writable: ' . $outPath);
@@ -85,33 +87,9 @@ class InitCommand extends Command
         }
 
         // Get the current working directory
-        $this->recursiveCopy($this-$this->skelDirectory, $outPath);
+        (new Filesystem())->mirror($this->skelDirectory, $outPath);
         $io->success('Deployed to: ' . $outPath);
 
         return 0;
-    }
-
-    /**
-     * Recursive copy function
-     *
-     * Credit: http://stackoverflow.com/a/7775949/143201
-     *
-     * @param string $source
-     * @param string $destination
-     */
-    protected function recursiveCopy($source, $destination)
-    {
-        /** @var \RecursiveIteratorIterator|\RecursiveDirectoryIterator $iterator */
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS)
-        );
-
-        foreach ($iterator as $item) {
-            if ($item->isDir()) {
-                mkdir($destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
-            } else {
-                copy($item, $destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
-            }
-        }
     }
 }

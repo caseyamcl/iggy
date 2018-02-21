@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="{{ path('/assets/styles.css') }}" />
 
     <!--<link rel="apple-touch-icon" href="apple-touch-icon.png">-->
 
@@ -22,7 +22,6 @@
     <![endif]-->
 
     {% block page_header %}
-        <img src="/assets/img/sighthound.png" />
         <h1>Hello Iggy!</h1>
         <hr />
     {% endblock %}

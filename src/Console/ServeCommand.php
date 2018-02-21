@@ -9,6 +9,7 @@ use React\EventLoop\Factory;
 use React\Http\Server;
 use React\Socket\Server as SocketServer;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,10 +65,10 @@ class ServeCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new ConsoleIO($input, $output);
-        $workDir = realpath($input->getOption('path'));
+        $workDir = realpath($input->getArgument('path'));
 
         if (! $workDir) {
-            $io->error('Path does not exist: ' . $input->getOption('path'));
+            $io->error('Path does not exist: ' . $input->getArgument('path'));
             return 1;
         }
         if (! is_readable($workDir)) {
