@@ -1,6 +1,7 @@
 <?php
 
 namespace Iggy;
+
 use Webmozart\PathUtil\Path;
 
 /**
@@ -14,9 +15,9 @@ class FilePathResolver
     const DEFAULT_SUFFIXES = ['twig', 'html', 'html.twig'];
 
     /**
-     * @var string
+     * @var array|string[]
      */
-    private $basePath;
+    private $basePaths;
 
     /**
      * @var array|string[]
@@ -31,28 +32,44 @@ class FilePathResolver
     /**
      * RequestFileResolver constructor.
      *
-     * @param string $basePath
+     * @param string|array|string[] $basePaths
      * @param array $searchFiles
      * @param array $searchSuffixes
      */
     public function __construct(
-        string $basePath,
+        $basePaths,
         array $searchFiles = self::DEFAULT_FILES,
         array $searchSuffixes = self::DEFAULT_SUFFIXES
     ) {
-        $this->basePath       = $basePath;
+        $this->basePaths      = (array) $basePaths;
         $this->subSearchFiles = $searchFiles;
         $this->searchSuffixes = $searchSuffixes;
     }
 
     /**
-     * @param string $path  The path section of the URI
+     * @param string $path
+     * @return null|\SplFileInfo
+     */
+    public function resolvePath(string $path): ?\SplFileInfo
+    {
+        foreach ($this->basePaths as $basePath) {
+            if ($fileInfo = $this->doResolvePath($basePath, $path)) {
+                return $fileInfo;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $basePath
+     * @param string $path The path section of the URI
      * @return \SplFileInfo|null
      */
-    public function resolvePath($path)
+    protected function doResolvePath(string $basePath, string $path): ?\SplFileInfo
     {
         // The specific path that the user asked for (could map to a directory)
-        $fullPath = Path::join($this->basePath, $path);
+        $fullPath = Path::join($basePath, $path);
 
         // If is directory, then search sub-files
         if (is_dir($fullPath)) {
