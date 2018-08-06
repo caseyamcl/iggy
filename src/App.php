@@ -38,9 +38,6 @@ class App
      * Handle requests from an outside server (Apache, NGINX, etc.)
      *
      * @param string $contentDir The full system path to the content (defaults ./content)
-     * @throws \ReflectionException
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
      */
     public static function request(string $contentDir = ''): void
     {

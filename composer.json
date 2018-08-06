@@ -14,15 +14,22 @@
         }
     ],    
     "require": {
-        "twig/twig"                   : "^2.4",
-        "aptoma/twig-markdown"        : "^3.0",
-        "league/commonmark"           : "^0.17",
+
+        "php": "^7.1",
+        "ext-bcmath": "*",
+
+        "twig/twig"           : "^2.4",
+        "aptoma/twig-markdown": "^3.0",
+        "league/commonmark"   : "^0.17",
+
         "ralouphie/mimey"             : "^1.0",
         "react/http"                  : "^0.7",
         "zendframework/zend-diactoros": "^1.6",
-        "oyejorge/less.php"           : "^1.7",
-        "leafo/scssphp"               : "^0.7",
-        "webmozart/path-util"         : "^2.3",
+
+        "oyejorge/less.php"  : "^1.7",
+        "leafo/scssphp"      : "^0.7",
+        "webmozart/path-util": "^2.3",
+
         "symfony/console"             : "^4.0",
         "symfony/filesystem"          : "^4.0",
         "gabrielelana/byte-units"     : "^0.5"

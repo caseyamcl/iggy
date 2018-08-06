@@ -1,4 +1,4 @@
-# Ignore vender directory
+# Ignore vendor directory
 vendor/
 
 # Ignore IDE stuff

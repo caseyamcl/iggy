@@ -11,6 +11,9 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class RequestHandler
 {
+    // TODO: Make this configurable
+    const DISALLOWED_PATTERNS = ['/^_templates/'];
+
     /**
      * @var FilePathResolver
      */
@@ -63,7 +66,12 @@ class RequestHandler
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         try {
-            // If path can be resolved to a file, then
+            // Check diallowed URLs
+            if ($this->hasDisallowedUrl($request)) {
+                return $this->errorHandler->handle($request, new HttpError(403, 'Forbidden path'));
+            }
+
+            // If path can be resolved to a file, then handle it
             if ($fileInfo = $this->fileResolver->resolvePath($request->getUri()->getPath())) {
                 return $this->fileHandler->handle($fileInfo, $request);
             }
@@ -78,5 +86,24 @@ class RequestHandler
             error_log($e);
             return $this->errorHandler->handle($request, HttpError::fromThrowable($e));
         }
+    }
+
+    /**
+     * Check if disallowed URL
+     *
+     * @param ServerRequestInterface $request
+     * @return bool
+     */
+    private function hasDisallowedUrl(ServerRequestInterface $request): bool
+    {
+        $path = '/' . ltrim($request->getUri()->getPath(), '/');
+
+        foreach (static::DISALLOWED_PATTERNS as $pattern) {
+            if (preg_match($pattern, $path)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
