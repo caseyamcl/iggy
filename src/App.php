@@ -13,7 +13,7 @@ use Zend\Diactoros\ServerRequestFactory;
  */
 class App
 {
-    const VERSION = 1.0;
+    const VERSION = '1.0';
 
     /**
      * @var Application
