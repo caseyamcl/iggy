@@ -43,8 +43,10 @@ class App
     {
         $that = new static();
 
+        $scriptDir = \Phar::running() ? dirname(\Phar::running(false)) : __DIR__;
+
         // Handle the request
-        $handler = $that->requestHandlerFactory->build($contentDir ?: Path::join(__DIR__, 'content'));
+        $handler = $that->requestHandlerFactory->build($contentDir ?: Path::join($scriptDir, 'content'));
         $emitter = new SapiEmitter();
 
         // Build a request

@@ -23,4 +23,4 @@
 require_once(__DIR__ . '/vendor/autoload.php');
 
 // Execute!
-(php_sapi_name() == 'cli') ? Iggy\App::console() : Iggy\App::request(__DIR__ . '/content');
+(php_sapi_name() == 'cli') ? Iggy\App::console() : Iggy\App::request();
